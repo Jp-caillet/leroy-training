@@ -1,7 +1,7 @@
 # Exercices JavaScript — Les bases
  
-10 exercices progressifs pour apprendre les fondamentaux de JavaScript.
-Les exercices 1 à 8 se lancent dans le terminal avec Node.js, les exercices 9 et 10 dans le navigateur.
+Un exercice Git, puis 11 exercices progressifs pour apprendre les fondamentaux de JavaScript.
+Les exercices 1 à 9 se lancent dans le terminal avec Node.js, les exercices 10 et 11 dans le navigateur.
  
 ---
  
@@ -12,7 +12,7 @@ Les exercices 1 à 8 se lancent dans le terminal avec Node.js, les exercices 9 e
 - **Un dépôt Git** pour tous les exercices, un dossier par exercice (`exercice-01/`, `exercice-02/`…).
 - **Une branche et une Pull Request par exercice.** Ton tuteur relit la PR avant que tu la merges.
 - **Pas d'IA pour écrire le code.** Tu peux utiliser la documentation [MDN](https://developer.mozilla.org/fr/) et [javascript.info](https://fr.javascript.info/).
-- **ESLint** : ton tuteur te fournit la configuration au départ. À l'exercice 8, tu la refais toi-même.
+- **ESLint** : ton tuteur te fournit la configuration au départ. À l'exercice 9, tu la refais toi-même.
 ### Lancer un script avec Node
  
 1. Ouvre un terminal dans le dossier de l'exercice (dans VS Code : `Ctrl + ù` ou menu *Terminal > Nouveau terminal*) :
@@ -41,6 +41,31 @@ node --watch identite.js
 - ✅ Tous les cas de test donnent le résultat attendu
 - ✅ ESLint ne remonte aucune erreur
 - ✅ Tu sais répondre aux questions de l'exercice **sans relire ton code**
+---
+ 
+## Exercice 0 — Prendre en main Git
+ 
+**Notions :** dépôt, commit, branche, Pull Request, conflit
+ 
+**Étapes :**
+1. Crée un dépôt `exercices-js` sur GitHub (avec un `README.md`) et clone-le sur ton ordinateur avec `git clone`.
+2. Modifie le `README.md` (ton prénom, tes objectifs), puis `git add`, `git commit` et `git push`.
+3. Crée une branche `ex0-presentation` avec `git switch -c ex0-presentation`, ajoute une section « Ce que je sais déjà faire », pousse-la et ouvre une **Pull Request** sur GitHub. Ton tuteur la relit, puis tu la merges.
+4. **Provoque un conflit** :
+   - reviens sur `main` et fais `git pull` ;
+   - crée une branche `conflit-a` et modifie la **première ligne** du README, puis commite ;
+   - reviens sur `main`, crée une branche `conflit-b` et modifie **la même ligne** autrement, puis commite ;
+   - merge `conflit-a` dans `main`, puis `conflit-b` dans `main` ;
+   - résous le conflit dans VS Code, puis commite.
+**Contraintes :**
+- [ ] Les messages de commit décrivent ce qui change (« Ajoute la section objectifs », pas « modif »)
+- [ ] Tu utilises `git status` avant chaque commit
+- [ ] Le conflit est résolu sans perdre aucune des deux modifications (ou avec un choix assumé)
+**Questions à préparer :**
+- Quelle est la différence entre `git commit` et `git push` ?
+- À quoi sert une branche ?
+- Que signifient les marqueurs `<<<<<<<`, `=======` et `>>>>>>>` ?
+- Que fait `git pull` ?
 ---
  
 ## Exercice 1 — Fiche d'identité
@@ -188,6 +213,12 @@ Puis :
 - [ ] Les deux versions sont dans des fonctions séparées et donnent exactement le même résultat
 - [ ] Un tableau vide ne fait pas planter le programme et ne renvoie pas `NaN`
 - [ ] Le tableau d'origine n'est jamais modifié
+**Bonus visuel :** affiche les statistiques dans une page web. Crée un `index.html` qui charge ton fichier avec `<script src="stats.js"></script>`, ajoute des éléments `<p id="moyenne"></p>`, etc., et remplis-les avec :
+```js
+document.querySelector("#moyenne").textContent = `Moyenne : ${stats.moyenne}`;
+```
+Ouvre `index.html` dans le navigateur pour voir le résultat.
+ 
 **Questions à préparer :**
 - Explique ce que fait `reduce`, étape par étape, sur l'exemple
 - Pourquoi `filter` ne modifie-t-il pas le tableau d'origine ?
@@ -238,7 +269,88 @@ Un contact a la forme `{ nom, email, tel }`. Écris quatre fonctions :
 - Que se passe-t-il avec deux espaces consécutifs dans `majusculeChaqueMot` ?
 ---
  
-## Exercice 8 — Projet propre
+## Exercice 8 — Chasse aux bugs
+ 
+**Notions :** lire un message d'erreur, débogueur de VS Code, bugs logiques
+ 
+Le code ci-dessous contient **4 bugs**. Copie-le dans `exercice-08/panier.js` et lance-le.
+ 
+```js
+const panier = [
+  { nom: "Clavier", prix: 49.9, quantite: 1 },
+  { nom: "Souris", prix: 19.9, quantite: "2" },
+  { nom: "Câble", prix: 5, quantite: 3 },
+];
+ 
+function totalPanier(articles) {
+  let total = 0;
+  for (let i = 0; i <= articles.length; i++) {
+    total += articles[i].prix * articles[i].quantite;
+  }
+  return total;
+}
+ 
+function nombreArticles(articles) {
+  let nombre = 0;
+  for (const article of articles) {
+    nombre += article.quantite;
+  }
+  return nombre;
+}
+ 
+function appliquerRemise(total, code) {
+  if (code = "PROMO10") {
+    return total * 0.1;
+  }
+  return total;
+}
+ 
+function formaterPrix(montant) {
+  return `${montant.toFixed(2)} €`;
+}
+ 
+const total = totalPanier(panier);
+console.log(`Articles : ${nombreArticles(panier)}`);
+console.log(`Total : ${formaterPrix(total)}`);
+console.log(`Avec le code FAUX : ${formaterPrix(appliquerRemise(total, "FAUX"))}`);
+console.log(`Avec le code PROMO10 : ${formaterPrix(appliquerRemise(total, "PROMO10"))}`);
+```
+ 
+**Résultat attendu une fois corrigé :**
+```
+Articles : 6
+Total : 104.70 €
+Avec le code FAUX : 104.70 €
+Avec le code PROMO10 : 94.23 €
+```
+ 
+**Méthode imposée :**
+1. **Lis le message d'erreur en entier** : quel type d'erreur, quel fichier, quelle ligne ?
+2. **Utilise le débogueur de VS Code** au moins une fois :
+   - clique dans la marge à gauche d'une ligne pour poser un **point d'arrêt** (un point rouge apparaît) ;
+   - ouvre le panneau *Exécuter et déboguer* (`Ctrl + Maj + D`) et lance avec `F5` (choisis « Node.js ») ;
+   - quand le programme s'arrête, regarde la valeur des variables dans le panneau de gauche ;
+   - avance ligne par ligne avec `F10`.
+3. **Lance ESLint** sur le fichier : il trouve l'un des bugs tout seul. Lequel ?
+4. Corrige **un bug à la fois** et relance après chaque correction.
+**À rendre dans la description de ta PR**, pour chaque bug :
+ 
+| Bug | Symptôme | Cause | Comment je l'ai trouvé | Correction |
+|---|---|---|---|---|
+| 1 | | | | |
+ 
+**Contraintes :**
+- [ ] Les 4 bugs sont trouvés et corrigés
+- [ ] Le débogueur a été utilisé au moins une fois (pas seulement des `console.log`)
+- [ ] Le tableau est rempli pour chaque bug
+**Questions à préparer :**
+- Pourquoi certains bugs font planter le programme et d'autres non ?
+- Pourquoi `1 + "2"` ne donne pas `3` ?
+- Quelle est la différence entre `=` et `===` ?
+- Qu'apporte un point d'arrêt par rapport à un `console.log` ?
+---
+ 
+## Exercice 9 — Projet propre
  
 **Notions :** modules, npm, ESLint, Git
  
@@ -260,6 +372,7 @@ carnet/
 2. Ajoute `"type": "module"` et le script `"start": "node src/index.js"` dans `package.json`
 3. Découpe le code avec `export` / `import`
 4. Installe et configure ESLint toi-même : `npm init @eslint/config@latest`
+ 
 **Contraintes :**
 - [ ] `npm start` lance la démo
 - [ ] `npx eslint .` ne remonte aucune erreur
@@ -270,7 +383,7 @@ carnet/
 - Pourquoi ne faut-il pas commiter `node_modules` ?
 ---
  
-## Exercice 9 — Todo list
+## Exercice 10 — Todo list
  
 **Notions :** DOM, événements, `localStorage`, première notion de sécurité
  
@@ -298,7 +411,7 @@ Elle doit s'afficher **comme du texte**, sans qu'aucune alerte n'apparaisse.
 - Pourquoi faut-il utiliser `JSON.stringify` pour enregistrer dans `localStorage` ?
 ---
  
-## Exercice 10 — Météo
+## Exercice 11 — Météo
  
 **Notions :** asynchrone, `fetch`, `async` / `await`, gestion d'erreurs
  
@@ -341,3 +454,5 @@ Paris : 8,4 °C, vent 12 km/h
 - [javascript.info](https://fr.javascript.info/)
 - [Documentation Node.js](https://nodejs.org/fr/learn)
 - [Documentation ESLint](https://eslint.org/docs/latest/)
+ 
+ 
