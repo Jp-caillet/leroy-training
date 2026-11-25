@@ -28,8 +28,8 @@ console.log(typeof presenter);
 
 // 2. Const tu ne peux pas modifier la variable, let oui.
 
-// 3.
+// 3. Un paramètre est le nom déclaré dans la définition de la fonction. L'argument lui est la valeur réelle passée au moment où on appelle la fonction.
 
 // 4. Elle renvoie undefined
 
-// 5. La fonction prend les paramètres qu'on lui donne entre parenthèses et les utilise dans cette même fonction
+// 5. La fonction prend les arguments qu'on lui donne entre parenthèses et les utilise dans cette même fonction
